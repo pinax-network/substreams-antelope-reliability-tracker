@@ -1,18 +1,26 @@
 mod pb;
 
-use pb::sf::ethereum::block_meta::v1::BlockMeta;
+use substreams::prelude::*;
+use substreams::errors::Error;
+use substreams_antelope::Block;
 
-use substreams::Hex;
-use substreams_ethereum::pb::eth;
+use pb::sf::antelope::missing_block_count::v1::MissingBlockCount;
+
+static mut MISSING_BLOCK_COUNT: u64 = None;
 
 #[substreams::handlers::map]
-fn map_block(block: eth::v2::Block) -> Result<BlockMeta, substreams::errors::Error> {
-    let header = block.header.as_ref().unwrap();
+fn map_missing_block_count(block: Block) -> Result<MissingBlockCount, Error> {
 
-    Ok(BlockMeta {
-        number: block.number,
-        hash: Hex(&block.hash).to_string(),
-        parent_hash: Hex(&header.parent_hash).to_string(),
-        timestamp: header.timestamp.as_ref().unwrap().to_string(),
+    let mut count;
+    
+    unsafe {
+        MISSING_BLOCK_COUNT += 1;
+        count = MISSING_BLOCK_COUNT;
+    }
+    
+
+    Ok(MissingBlockCount {
+        timestamp: block.clone().header.unwrap().timestamp.unwrap().to_string(),
+        num_missing_blocks: count,
     })
 }

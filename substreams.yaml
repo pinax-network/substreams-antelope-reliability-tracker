@@ -5,7 +5,7 @@ package:
 
 protobuf:
   files:
-    - block_meta.proto
+    - missing_block_count.proto
   importPaths:
     - ./proto
 
@@ -15,9 +15,9 @@ binaries:
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
-  - name: map_block
+  - name: map_missing_block_count
     kind: map
     inputs:
-      - source: sf.ethereum.type.v2.Block
+      - source: sf.antelope.type.v1.Block
     output:
-      type: proto:sf.ethereum.block_meta.v1.BlockMeta
+      type: proto:sf.antelope.missing_block_count.v1.MissingBlockCount
