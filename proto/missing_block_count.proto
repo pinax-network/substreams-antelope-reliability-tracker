@@ -3,6 +3,6 @@ syntax = "proto3";
 package sf.antelope.missing_block_count.v1;
 
 message MissingBlockCount {
-  string timestamp = 1;
-  uint64 num_missing_blocks = 2;
+  double timestamp = 1;
+  string hash = 2;
 }

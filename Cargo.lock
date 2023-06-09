@@ -807,17 +807,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "substreams-ethereum-quickstart"
-version = "1.0.0"
-dependencies = [
- "prost",
- "prost-types",
- "substreams",
- "substreams-antelope",
- "substreams-ethereum",
-]
-
-[[package]]
 name = "substreams-macro"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -827,6 +816,28 @@ dependencies = [
  "quote",
  "syn",
  "thiserror",
+]
+
+[[package]]
+name = "substreams-sink-prometheus"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b1f3d16e021bec7cdaff6fec5f241f5b06ba4a855519332098af2794e8fe600"
+dependencies = [
+ "prost",
+ "prost-types",
+]
+
+[[package]]
+name = "substreams_antelope_reliability_tracker"
+version = "1.0.0"
+dependencies = [
+ "prost",
+ "prost-types",
+ "substreams",
+ "substreams-antelope",
+ "substreams-ethereum",
+ "substreams-sink-prometheus",
 ]
 
 [[package]]

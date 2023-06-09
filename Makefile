@@ -1,12 +1,20 @@
-ENDPOINT ?= mainnet.eth.streamingfast.io:443
+ENDPOINT ?= eos.firehose.eosnation.io:9001
 
 .PHONY: build
 build:
 	cargo build --target wasm32-unknown-unknown --release
 
-.PHONY: stream
-stream: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_block -s 12292922 -t +10
+.PHONY: run
+run: build
+	substreams run -e $(ENDPOINT) substreams.yaml map_block_time -s 12292922 -t +10
+
+.PHONY: gui
+gui: build
+	substreams gui -e $(ENDPOINT) substreams.yaml map_block_time -s 12292922 -t +10
+
+.PHONY: prom_out
+prom_out: build
+	substreams gui -e $(ENDPOINT) substreams.yaml prom_out -s 12292922 -t +10
 
 .PHONY: protogen
 protogen:
