@@ -1,5 +1,5 @@
 use substreams::log;
-use substreams_sink_prometheus::{PrometheusOperations, Gauge};
+use substreams_sink_prometheus::{PrometheusOperations, Gauge, Counter};
 use crate::substreams_antelope_reliability_tracker::MissingBlockCount;
 use std::collections::HashMap;
 use substreams::errors::Error;
@@ -11,14 +11,16 @@ pub fn prom_out(
 ) -> Result<PrometheusOperations, Error> {
     
     let mut prom_ops = PrometheusOperations::default();
-  
-    let timestamp = map_missing_block_count.clone().timestamp;
-    let hash = map_missing_block_count.clone().hash;
 
-    let labels = HashMap::from([("hash".to_string(), hash)]);
+    let producer = map_missing_block_count.clone().current_producer;
 
-    let mut gauge = Gauge::from("block_time").with(labels.clone());
+    let labels = HashMap::from([("current_producer".to_string(), producer.clone()),
+     ("timestamp".to_string(), map_missing_block_count.clone().timestamp.clone()),
+     ("hash".to_string(), map_missing_block_count.clone().hash.clone()),
+     ("producers".to_string(), map_missing_block_count.clone().producers.join(", "))]);
 
-    prom_ops.push(gauge.set(timestamp));
+    if producer == "eos42freedom".to_string() {
+        prom_ops.push(Counter::from("block_produced").with(labels.clone()).inc());
+    }
     Ok(prom_ops)
 }
