@@ -6,29 +6,16 @@ package:
 imports:
   prometheus: https://github.com/pinax-network/substreams-sink-prometheus.rs/releases/download/v0.1.9/substreams-sink-prometheus-v0.1.9.spkg
 
-protobuf:
-  files:
-    - missing_block_count.proto
-  importPaths:
-    - ./proto
-
 binaries:
   default:
     type: wasm/rust-v1
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
-  - name: map_block_time
-    kind: map
-    inputs:
-      - source: sf.antelope.type.v1.Block
-    output:
-      type: proto:sf.antelope.missing_block_count.v1.MissingBlockCount
-
   - name: prom_out
     kind: map
     inputs:
-      - map: map_block_time
+      - source: sf.antelope.type.v1.Block
     output:
       type: proto:pinax.substreams.sink.prometheus.v1.PrometheusOperations
 

@@ -3,5 +3,4 @@
 pub mod substreams_antelope_reliability_tracker;
 pub use self::substreams_antelope_reliability_tracker::*;
 
-mod maps;
 mod sinks;
