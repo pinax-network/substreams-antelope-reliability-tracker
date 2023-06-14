@@ -1,3 +1,4 @@
+use prost_types::Timestamp;
 use substreams::log;
 use substreams_sink_prometheus::{PrometheusOperations, Gauge, Counter};
 use crate::substreams_antelope_reliability_tracker::MissingBlockCount;
@@ -12,15 +13,17 @@ pub fn prom_out(
     
     let mut prom_ops = PrometheusOperations::default();
 
-    let producer = map_missing_block_count.clone().current_producer;
+    let timestamp = map_missing_block_count.clone().timestamp;
+    let hash = map_missing_block_count.clone().hash;
+    let current_producer = map_missing_block_count.clone().current_producer;
+    let active_schedule = map_missing_block_count.clone().producers;
 
-    let labels = HashMap::from([("current_producer".to_string(), producer.clone()),
-     ("timestamp".to_string(), map_missing_block_count.clone().timestamp.clone()),
-     ("hash".to_string(), map_missing_block_count.clone().hash.clone()),
-     ("producers".to_string(), map_missing_block_count.clone().producers.join(", "))]);
+    
+    let labels = HashMap::from([("producer".to_string(), current_producer.clone()),
+        ("timestamp".to_string(), timestamp.clone()),
+        ("hash".to_string(), hash.clone()),
+        ("active_shedule".to_string(), active_schedule.join(", "))]);
+    prom_ops.push(Counter::from("blocks_produced").with(labels.clone()).inc());
 
-    if producer == "eos42freedom".to_string() {
-        prom_ops.push(Counter::from("block_produced").with(labels.clone()).inc());
-    }
     Ok(prom_ops)
 }

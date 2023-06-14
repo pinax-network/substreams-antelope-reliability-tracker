@@ -9,8 +9,8 @@ fn map_block_time(block: Block) -> Result<MissingBlockCount, Error> {
     let mut producers_list: Vec<String> = Vec::new();
 
     let active_schedule = block.clone().active_schedule_v2;
-    for (counter, producer) in active_schedule.unwrap().producers.iter().enumerate() {
-        producers_list.push(format!("{}: {}", counter + 1, producer.account_name));
+    for producer in active_schedule.unwrap().producers {
+        producers_list.push(producer.account_name.clone());
     }
 
     let curr_producer = block.clone().header.unwrap().producer;
