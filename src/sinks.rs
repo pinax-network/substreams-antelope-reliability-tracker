@@ -10,7 +10,7 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
     let mut prom_ops = PrometheusOperations::default();
 
     let active_producer = block.clone().header.unwrap().producer;
-    let labels = HashMap::from([("active producer".to_string(), active_producer.clone())]);
+    let labels = HashMap::from([("producer".to_string(), active_producer.clone())]);
     prom_ops.push(Counter::from("blocks_produced").with(labels.clone()).inc());
 
     for producer in block.clone().active_schedule_v2.unwrap().producers {
@@ -18,6 +18,6 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
         prom_ops.push(Counter::from("active_schedule").with(label.clone()).inc());
     }
 
-    prom_ops.push(Counter::from("all_blocks_produced").inc());
+    prom_ops.push(Counter::from("all_blocks_produced").with(labels.clone()).inc());
     Ok(prom_ops)
 }
