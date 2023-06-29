@@ -5,6 +5,7 @@ package:
 
 imports:
   prometheus: https://github.com/pinax-network/substreams-sink-prometheus.rs/releases/download/v0.1.9/substreams-sink-prometheus-v0.1.9.spkg
+  kv_operations: https://github.com/streamingfast/substreams-sink-kv/releases/download/v2.1.5/substreams-sink-kv-v2.1.5.spkg
 
 binaries:
   default:
@@ -18,4 +19,11 @@ modules:
       - source: sf.antelope.type.v1.Block
     output:
       type: proto:pinax.substreams.sink.prometheus.v1.PrometheusOperations
+  
+  - name: kv_out
+    kind: map
+    inputs:
+      - source: sf.antelope.type.v1.Block
+    output:
+      type: proto:sf.substreams.sink.kv.v1.KVOperations
 

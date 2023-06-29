@@ -1,3 +1,5 @@
 *.spkg
 target/
 .idea
+substreams-sink-kv
+badger_data.db
