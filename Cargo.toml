@@ -14,6 +14,7 @@ prost = "0.11"
 prost-types = "0.11.8"
 substreams-antelope = "0.1.1"
 substreams-sink-prometheus = "0.1.9"
+substreams-sink-kv = "0.1.3"
 
 [profile.release]
 lto = true

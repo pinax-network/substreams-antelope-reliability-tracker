@@ -16,6 +16,10 @@ gui: build
 prom_out: build
 	substreams gui -e $(ENDPOINT) substreams.yaml prom_out -s 12292922 -t +10
 
+.PHONY: kv_out
+kv_out: build
+	substreams gui -e $(ENDPOINT) substreams.yaml kv_out -s 12292922 -t +10
+
 .PHONY: protogen
 protogen:
 	substreams protogen ./substreams.yaml --exclude-paths="sf/substreams,google"
