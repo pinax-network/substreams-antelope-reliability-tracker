@@ -1,11 +1,10 @@
-use substreams_antelope::Block;
+/*use substreams_antelope::Block;
 use substreams_sink_prometheus::{PrometheusOperations, Counter};
 use std::{collections::HashMap};
 use substreams::errors::Error;
 use substreams_sink_kv::pb::sf::substreams::sink::kv::v1::KvOperations;
 use substreams::log;
 use chrono::{DateTime, NaiveDateTime, Utc};
-
 
 #[substreams::handlers::map]
 pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
@@ -46,4 +45,4 @@ pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
     }
 
     Ok(kv_ops)
-}
+}*/
