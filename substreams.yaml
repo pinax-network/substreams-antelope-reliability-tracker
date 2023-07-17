@@ -7,12 +7,25 @@ imports:
   prometheus: https://github.com/pinax-network/substreams-sink-prometheus.rs/releases/download/v0.1.9/substreams-sink-prometheus-v0.1.9.spkg
   kv_operations: https://github.com/streamingfast/substreams-sink-kv/releases/download/v2.1.5/substreams-sink-kv-v2.1.5.spkg
 
+protobuf:
+  files:
+    - antelope_block_meta.proto
+  importPaths:
+    - ./proto
+
 binaries:
   default:
     type: wasm/rust-v1
     file: ./target/wasm32-unknown-unknown/release/substreams.wasm
 
 modules:
+  - name: map_block
+    kind: map
+    inputs:
+      - source: sf.antelope.type.v1.Block
+    output:
+      type: proto:antelope.antelope_block_meta.v1.AntelopeBlockMeta
+  
   - name: prom_out
     kind: map
     inputs:
