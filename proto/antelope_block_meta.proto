@@ -2,11 +2,9 @@ syntax = "proto3";
 
 package antelope.antelope_block_meta.v1;
 
-import "google/protobuf/timestamp.proto";
-
 message AntelopeBlockMeta {
     string hash = 1;
     string producer = 2;
     repeated string current_schedule = 3;
-    google.protobuf.Timestamp timestamp = 4;
+    string timestamp = 4;
 }

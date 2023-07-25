@@ -6,11 +6,11 @@ build:
 
 .PHONY: run
 run: build
-	substreams run -e $(ENDPOINT) substreams.yaml map_block_time -s 12292922 -t +10
+	substreams run -e $(ENDPOINT) substreams.yaml map_block -s 12292922 -t +10
 
 .PHONY: gui
 gui: build
-	substreams gui -e $(ENDPOINT) substreams.yaml map_block_time -s 12292922 -t +10
+	substreams gui -e $(ENDPOINT) substreams.yaml map_block -s 12292922 -t +10
 
 .PHONY: prom_out
 prom_out: build

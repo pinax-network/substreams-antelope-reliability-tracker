@@ -7,12 +7,10 @@ use std::collections::HashMap;
 use substreams::errors::Error;
 use substreams_sink_kv::pb::sf::substreams::sink::kv::v1::KvOperations;
 use pb::antelope::antelope_block_meta::v1::AntelopeBlockMeta;
-use substreams::log;
 use substreams::proto;
 
 #[substreams::handlers::map]
-pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
-    
+pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {  
     let mut prom_ops = PrometheusOperations::default();
 
     let active_producer = block.clone().header.unwrap().producer;
@@ -31,49 +29,38 @@ pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {
 
 #[substreams::handlers::map]
 pub fn map_block(block: Block) -> Result<AntelopeBlockMeta, Error> {
-    let timestamp = block.clone().header.unwrap().timestamp.unwrap();
-    let producer = block.clone().header.unwrap().producer;
-    let hash = block.clone().id;
-    let current_schedule = block.clone().active_schedule_v2.unwrap();
+    let timestamp = block.header.as_ref().and_then(|header| header.timestamp.as_ref()).unwrap().to_string();
+    let producer = block.header.as_ref().map(|header| header.producer.clone()).unwrap();
+    let hash = block.id.clone();
+    let current_schedule = &block.active_schedule_v2.unwrap().producers;
 
-    let mut producers_list: Vec<String> = Vec::new();
-    for producer in current_schedule.producers {
-        log::info!("Producer: {}", producer.account_name);
-        producers_list.push(producer.account_name);
-    }
+    let producers_list: Vec<String> = current_schedule.iter().map(|producer| producer.account_name.clone()).collect();
 
     Ok(AntelopeBlockMeta {
-        producer: producer,
-        hash: hash,
+        producer,
+        hash,
         current_schedule: producers_list,
-        timestamp: Some(timestamp),
+        timestamp,
     })
-
 }
 
 #[substreams::handlers::map]
 pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
-    let mut kv_ops: KvOperations = Default::default();
- 
-    let timestamp = block.clone().header.unwrap().timestamp.unwrap();
-    let producer = block.clone().header.unwrap().producer;
-    let hash = block.clone().id;
-    let current_schedule = block.clone().active_schedule_v2.unwrap();
+    let timestamp = block.header.as_ref().unwrap().timestamp.as_ref().unwrap().to_string();
+    let producer = block.header.as_ref().unwrap().producer.to_string();
+    let hash = block.id.to_string();
+    let current_schedule = &block.active_schedule_v2.unwrap().producers;
 
-    let mut producers_list: Vec<String> = Vec::new();
-    for producer in current_schedule.producers {
-        log::info!("Producer: {}", producer.account_name);
-        producers_list.push(producer.account_name);
-    }
+    let producers_list: Vec<String> = current_schedule.iter().map(|producer| producer.account_name.clone()).collect();
 
-    let key = format!("seconds: {}, nanos: {}", timestamp.seconds, timestamp.nanos);
     let value = proto::encode(&AntelopeBlockMeta {
-        producer: producer,
-        hash: hash,
+        producer,
+        hash,
         current_schedule: producers_list,
-        timestamp: Some(timestamp),
+        timestamp: timestamp.clone(),
     }).unwrap();
 
-    kv_ops.push_new(key, value, 1);
+    let mut kv_ops = KvOperations::default();
+    kv_ops.push_new(timestamp, value, 1);
     Ok(kv_ops)
 }
