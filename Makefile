@@ -1,4 +1,4 @@
-ENDPOINT ?= eos.firehose.eosnation.io:9001
+ENDPOINT ?= kylin.firehose.eosnation.io:9001
 
 .PHONY: build
 build:
@@ -18,7 +18,7 @@ prom_out: build
 
 .PHONY: kv_out
 kv_out: build
-	substreams gui -e $(ENDPOINT) substreams.yaml kv_out -s 12292922 -t +10
+	substreams gui -e $(ENDPOINT) substreams.yaml kv_out -s 303006925 -t +100
 
 .PHONY: protogen
 protogen:

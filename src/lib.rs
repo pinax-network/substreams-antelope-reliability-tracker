@@ -8,6 +8,7 @@ use substreams::errors::Error;
 use substreams_sink_kv::pb::sf::substreams::sink::kv::v1::KvOperations;
 use pb::antelope::antelope_block_meta::v1::AntelopeBlockMeta;
 use substreams::proto;
+use substreams::log;
 
 #[substreams::handlers::map]
 pub fn prom_out(block: Block) -> Result<PrometheusOperations, Error> {  
@@ -61,6 +62,6 @@ pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
     }).unwrap();
 
     let mut kv_ops = KvOperations::default();
-    kv_ops.push_new(timestamp, value, 1);
+    kv_ops.push_new(format!("number: {}, date: {}", block.number, timestamp), value, 1);
     Ok(kv_ops)
 }
