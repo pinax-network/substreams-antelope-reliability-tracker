@@ -47,7 +47,7 @@ pub fn map_block(block: Block) -> Result<AntelopeBlockMeta, Error> {
 
 #[substreams::handlers::map]
 pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
-    let timestamp = block.header.as_ref().unwrap().timestamp.as_ref().unwrap().to_string();
+    let timestamp = block.header.as_ref().unwrap().timestamp.clone().as_ref().unwrap().to_string();
     let producer = block.header.as_ref().unwrap().producer.to_string();
     let hash = block.id.to_string();
     let current_schedule = &block.active_schedule_v2.unwrap().producers;
@@ -62,6 +62,25 @@ pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
     }).unwrap();
 
     let mut kv_ops = KvOperations::default();
-    kv_ops.push_new(format!("number: {}, date: {}", block.number, timestamp), value, 1);
+    kv_ops.push_new(format!("date: {}", date_to_sortable_string(&timestamp)), value, 1);
     Ok(kv_ops)
+}
+
+fn date_to_sortable_string(date_str: &str) -> String {
+    // Split the date string into components
+    let (date_part, time_part) = date_str.split_at(10);
+    let time_part = &time_part[1..time_part.len() - 1];
+
+    // Split the time part into seconds and milliseconds
+    let mut parts = time_part.splitn(2, '.');
+
+    // Pad seconds with zeros to fixed length
+    let padded_seconds_part = format!("{:<02}", parts.next().unwrap());
+
+    // Pad milliseconds with zeros to fixed length
+    let padded_milliseconds_part = parts.next().unwrap_or("000");
+    let padded_milliseconds_part = format!("{:<03}", padded_milliseconds_part);
+
+    // Combine the padded components and return the sortable string
+    format!("{}T{}.{}Z", date_part, padded_seconds_part, padded_milliseconds_part)
 }
