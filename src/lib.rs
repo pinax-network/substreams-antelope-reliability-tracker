@@ -36,7 +36,7 @@ pub fn map_block(block: Block) -> Result<AntelopeBlockMeta, Error> {
     let current_schedule = &block.active_schedule_v2.unwrap().producers;
 
     let producers_list: Vec<String> = current_schedule.iter().map(|producer| producer.account_name.clone()).collect();
-
+    
     Ok(AntelopeBlockMeta {
         producer,
         hash,
@@ -47,17 +47,24 @@ pub fn map_block(block: Block) -> Result<AntelopeBlockMeta, Error> {
 
 #[substreams::handlers::map]
 pub fn kv_out(block: Block) -> Result<KvOperations, Error> {
-    let timestamp = block.header.as_ref().unwrap().timestamp.clone().as_ref().unwrap().to_string();
-    let producer = block.header.as_ref().unwrap().producer.to_string();
+    let header = block.header.as_ref().unwrap();
+    let timestamp = header.timestamp.as_ref().unwrap().to_string();
+    let producer = header.producer.to_string();
     let hash = block.id.to_string();
     let current_schedule = &block.active_schedule_v2.unwrap().producers;
-
-    let producers_list: Vec<String> = current_schedule.iter().map(|producer| producer.account_name.clone()).collect();
+    
+    log::info!("block number: {}", block.number);
+    log::info!("producer: {}", producer);
+    log::info!("hash: {}", hash);
+    /*for prod in current_schedule.iter() {
+        log::info!("current schedule: {}", prod.account_name);
+    }*/
+    log::info!("timestamp: {}", timestamp.clone());
 
     let value = proto::encode(&AntelopeBlockMeta {
-        producer,
-        hash,
-        current_schedule: producers_list,
+        producer: producer.clone(),
+        hash: hash.clone(),
+        current_schedule: current_schedule.iter().map(|producer| producer.account_name.clone()).collect(),
         timestamp: timestamp.clone(),
     }).unwrap();
 

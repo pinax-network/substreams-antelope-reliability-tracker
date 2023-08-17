@@ -10,7 +10,7 @@ run: build
 
 .PHONY: gui
 gui: build
-	substreams gui -e $(ENDPOINT) substreams.yaml map_block -s 12292922 -t +10
+	substreams gui -e $(ENDPOINT) substreams.yaml map_block -s 303411250 -t +1000
 
 .PHONY: prom_out
 prom_out: build
@@ -18,7 +18,7 @@ prom_out: build
 
 .PHONY: kv_out
 kv_out: build
-	substreams gui -e $(ENDPOINT) substreams.yaml kv_out -s 303006925 -t +100
+	substreams gui -e $(ENDPOINT) substreams.yaml kv_out -s 303411250 -t +1000
 
 .PHONY: protogen
 protogen:
